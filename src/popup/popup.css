@@ -1,0 +1,33 @@
+:root{
+  --bg:#0b1220; --panel:#111a2e; --line:#1f2b45; --fg:#e5edf7; --muted:#8aa0bd;
+  --green:#16a34a; --amber:#f59e0b; --red:#dc2626;
+}
+*{box-sizing:border-box;}
+body{width:340px;margin:0;background:var(--bg);color:var(--fg);
+  font-family:system-ui,"Segoe UI",Arial,sans-serif;font-size:14px;}
+.hd{display:flex;align-items:center;gap:8px;padding:12px 14px 6px;}
+.brand{font-weight:800;font-size:17px;display:flex;align-items:center;gap:7px;}
+.logo{font-size:18px;}
+.panel{padding:12px 14px;}
+.note{color:var(--muted);font-size:12px;line-height:1.55;margin:6px 0;}
+.big{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:8px 0 4px;}
+.emoji{font-size:52px;line-height:1;}
+.headline{font-size:18px;font-weight:800;}
+.host{font-family:ui-monospace,monospace;font-size:12px;color:var(--muted);word-break:break-all;}
+.reasons{list-style:none;padding:0;margin:12px 0 4px;}
+.reasons li{padding:7px 9px;margin:5px 0;background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;font-size:13px;display:flex;gap:8px;align-items:flex-start;}
+.reveal{background:#3b0d0d;border:1px solid var(--red);color:#fecaca;border-radius:8px;
+  padding:9px 11px;margin:10px 0;font-size:13px;line-height:1.5;word-break:break-all;}
+.alert{background:#3b0d0d;border:1px solid var(--red);color:#fecaca;padding:10px;
+  border-radius:8px;margin-top:10px;font-weight:700;text-align:center;}
+.okbox{background:#0e2a17;border:1px solid var(--green);color:#bbf7d0;padding:12px;
+  border-radius:10px;margin-top:8px;font-size:14px;line-height:1.55;text-align:center;}
+.ft{color:var(--muted);font-size:10px;text-align:center;padding:8px;border-top:1px solid var(--line);}
+.actions { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+.act { border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 8px; padding: 9px 11px; font-size: 13px; cursor: pointer; font-family: inherit; text-align: center; }
+.act:hover { border-color: var(--fg); }
+.act.danger { background: #3b0d0d; border-color: var(--red); color: #fecaca; }
+.act.ok { background: #0e2a17; border-color: var(--green); color: #bbf7d0; }
+.act.ghost { background: transparent; }

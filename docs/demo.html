@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="mn"><head><meta charset="utf-8"><title>Tatar Shield — Demo</title>
+<style>
+  body{margin:0;background:#0b1220;color:#e5edf7;font-family:system-ui,'Segoe UI',Arial,sans-serif;padding:24px;}
+  h1{font-size:22px;} .sub{color:#8aa0bd;margin-bottom:20px;}
+  .row{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;}
+  .card{width:340px;background:#111a2e;border:1px solid #1f2b45;border-radius:14px;padding:14px;}
+  .brand{font-weight:800;display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+  .logo{width:22px;height:22px;border-radius:6px;background:#22c55e;color:#071018;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .big{text-align:center;padding:10px 0;}
+  .emoji{font-size:48px;} .headline{font-size:18px;font-weight:800;margin-top:4px;}
+  .host{font-family:ui-monospace,monospace;color:#8aa0bd;font-size:12px;text-align:center;}
+  .okbox{background:#0e2a17;border:1px solid #16a34a;color:#bbf7d0;border-radius:8px;padding:10px;margin-top:8px;font-size:13px;text-align:center;}
+  .reveal{background:#3b0d0d;border:1px solid #dc2626;color:#fecaca;border-radius:8px;padding:9px;margin:8px 0;font-size:12px;}
+  ul{list-style:none;padding:0;margin:8px 0;} li{padding:6px 8px;background:#111a2e;border:1px solid #1f2b45;border-radius:8px;margin:5px 0;font-size:13px;}
+  .alert{background:#3b0d0d;border:1px solid #dc2626;color:#fecaca;padding:9px;border-radius:8px;text-align:center;font-weight:700;margin-top:8px;}
+  .act{display:block;width:100%;margin:6px 0;padding:9px;border-radius:8px;border:1px solid #1f2b45;background:#111a2e;color:#e5edf7;font-size:13px;text-align:center;}
+  .act.danger{background:#3b0d0d;border-color:#dc2626;color:#fecaca;} .act.ok{background:#0e2a17;border-color:#16a34a;color:#bbf7d0;}
+  .block{margin-top:24px;background:#7f1d1d;color:#fff;border-radius:14px;padding:30px;text-align:center;}
+  .block .t{font-size:24px;font-weight:800;} .block .b{background:#16a34a;display:inline-block;padding:10px 20px;border-radius:10px;font-weight:700;margin-top:14px;}
+</style></head><body>
+<h1>🛡️ Tatar Shield — Demo</h1>
+<div class="sub">Popup-ийн 4 төлөв ба улаан блок хуудасны жишээ (зөвхөн харагдах байдлын demo).</div>
+<div class="row">
+  <div class="card"><div class="brand"><span class="logo">T</span> Tatar Shield</div>
+    <div class="big"><div class="emoji">✅</div><div class="headline" style="color:#16a34a">Албан ёсны сайт</div></div>
+    <div class="host">khanbank.com</div>
+    <div class="okbox">Энэ бол Хаан Банк —ны албан ёсны сайт мөн. Итгэлтэйгээр нэвтэрч болно.</div>
+  </div>
+  <div class="card"><div class="brand"><span class="logo">T</span> Tatar Shield</div>
+    <div class="big"><div class="emoji">⛔</div><div class="headline" style="color:#dc2626">Аюултай — хуурамч сайт</div></div>
+    <div class="host">ханбанк.мн</div>
+    <div class="reveal">Танд «ханбанк» гэж харагдаж байгаа ч жинхэнэ хаяг өөр байна</div>
+    <ul><li>✗ Кирилл үсгээр банкны нэрийг бичсэн</li><li>✗ Албан ёсны нэртэй ижил харагдана</li></ul>
+    <div class="alert">🚫 Нэвтрэх нэр, нууц үг, OTP код бүү оруул!</div>
+  </div>
+  <div class="card"><div class="brand"><span class="logo">T</span> Tatar Shield</div>
+    <div class="big"><div class="emoji">🔎</div><div class="headline" style="color:#8aa0bd">Шалгагдлаа</div></div>
+    <div class="host">example-shop.mn</div>
+    <div style="color:#8aa0bd;font-size:12px;margin:8px 0">Энэ сайт танигдсан банк/төрийн жагсаалтад алга.</div>
+    <button class="act danger">🚫 Энэ сайтыг блоклох</button>
+    <button class="act ok">✓ Найдвартай гэж тэмдэглэх</button>
+  </div>
+</div>
+<div class="block">
+  <div style="font-size:56px">⚠️</div>
+  <div class="t">Зогс! Хуурамч сайт байж болзошгүй</div>
+  <div style="margin:8px 0">Энэ хаяг «Хаан Банк»-ыг дуурайлгасан хуурамч сайт байж магадгүй.</div>
+  <div style="font-weight:700;margin-top:8px">🚫 Нэвтрэх нэр, нууц үг, OTP код, картын мэдээллээ бүү оруул!</div>
+  <div class="b">← Аюулгүй хуудас руу буцах</div>
+  <div style="margin-top:20px;font-size:12px;opacity:.7">Tatar Shield · Enkhbat.O — Security Analyst</div>
+</div>
+</body></html>
