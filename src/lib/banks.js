@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Tatar Shield — Монголын банк, санхүүгийн байгууллагуудын албан ёсны allow-list.
  * Эх сурвалж: Монголбанк (12 лицензтэй банк) + хэрэглэгчийн баталгаажуулсан жагсаалт.
  *
@@ -107,3 +107,4 @@
   else if (typeof self !== "undefined") self.TATAR_BANKS = api;
   else if (typeof window !== "undefined") window.TATAR_BANKS = api;
 })();
+
