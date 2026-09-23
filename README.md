@@ -1,4 +1,4 @@
-# 🛡️ Tatar Shield — Фишингээс хамгаалагч
+﻿# 🛡️ Tatar Shield — Фишингээс хамгаалагч
 
 > Монголын банк, төрийн сайтуудын **дуураймал (фишинг) хаягийг** илрүүлж,
 > нууц үг/OTP алдахаас өмнө анхааруулдаг хөнгөн, **офлайн** хөтчийн өргөтгөл.
@@ -10,6 +10,15 @@
 ![privacy](https://img.shields.io/badge/privacy-no%20data%20collected-success)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 ![browsers](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Firefox-supported-9cf)
+
+---
+
+## 🏪 Store-оос суулгах / Install from Store
+
+| Browser | Линк |
+|---------|------|
+| Chrome | [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-суулгах-blue?logo=googlechrome)](https://chromewebstore.google.com/detail/gbcclomjnodendjigeckdbefeiflabhk) |
+| Edge | [![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-суулгах-blue?logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/tatar-shield-%E2%80%94-%D1%84%D0%B8%D1%88%D0%B8%D0%BD%D0%B3%D1%8D%D1%8D%D1%81/pfbblpkfahgbedpbajadbenjhkjibekl) |
 
 ---
 
@@ -115,3 +124,4 @@ No data collected — see [PRIVACY.md](PRIVACY.md). Store review notes: [docs/pe
 
 ## License
 [MIT](LICENSE) © 2026 **Enkhbat.O — Security Analyst**
+
