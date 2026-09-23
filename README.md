@@ -5,7 +5,7 @@
 > A lightweight, **offline** browser extension that protects Mongolian users from
 > look-alike (phishing) domains of local banks & government sites.
 
-![version](https://img.shields.io/badge/version-1.0.0-brightgreen)
+![version](https://img.shields.io/badge/version-1.2.0-brightgreen)
 ![manifest](https://img.shields.io/badge/Manifest-V3-blue)
 ![privacy](https://img.shields.io/badge/privacy-no%20data%20collected-success)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -75,7 +75,7 @@ Levenshtein зай + кирилл банкны нэрийн жагсаалт. Б
 
 ## 🏦 Хамрагдсан байгууллага
 - **12 арилжааны банк** (Монголбанкны лицензтэй) + дижитал банк — бүрэн хамгаалалттай.
-- **Гол төрийн сайт:** e-mongolia, gov.mn, mta.
+- **Гол төрийн сайт:** e-mongolia.mn, gov.mn, mta.mn, ndaatgal.mn — болон тэдгээрийн бүх subdomain (*.gov.mn автоматаар).
 - **Крипто/дижитал хөрөнгийн бирж:** CoinHub, Complex, Trade.mn, CoreX, X-Meta.
 - **Банк бус санхүү / финтек:** LendMN, Storepay, Ard Credit, Pocket, Most, Toki, SendMN, Moni, Simple, Netcapital.
 
@@ -124,4 +124,5 @@ No data collected — see [PRIVACY.md](PRIVACY.md). Store review notes: [docs/pe
 
 ## License
 [MIT](LICENSE) © 2026 **Enkhbat.O — Security Analyst**
+
 

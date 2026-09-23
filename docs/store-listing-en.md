@@ -8,7 +8,8 @@ Detects look-alike (phishing) domains of Mongolian banks & government sites and 
 
 ## Detailed description
 Tatar Shield is a lightweight, offline phishing-protection extension for Mongolian
-users. All checks run locally in your browser — no data is collected.
+users. All checks run locally in your browser — no data is collected, nothing is
+sent to any server.
 
 What it does:
 • 🟢 Confirms official bank/government sites with a green check.
@@ -16,19 +17,25 @@ What it does:
 • 🔴 Blocks the whole page on fake (look-alike) sites, stopping you before you
   enter a password or OTP.
 
-Attacks it detects:
-• Mixed Cyrillic/Latin (IDN homograph) domains — e.g. хacbank.mn
+Attacks detected (v1.2.0):
+• Mixed Cyrillic/Latin (IDN homograph) — e.g. кhanbank.mn (Cyrillic к)
 • Bank names written in Cyrillic — e.g. ханбанк.мн
-• Hidden punycode (xn--) and Greek/special-character domains
-• Typo or brand-containing fake domains — e.g. khanbank.net
+• Punycode domains (xn--) — e.g. xn--khanban-v2b.mn
+• TLD squatting — e.g. khanbank.net (.mn → .net)
+• Subdomain spoofing — e.g. khanbank.mn.evil.com
+• @ userinfo spoofing — e.g. khanbank.mn@evil.com (real host: evil.com)
+• Typosquatting / combosquatting — e.g. khanbnk.mn, secure-khanbank.com
+• All subdomains of Mongolian banks auto-protected (*.khanbank.mn etc.)
+• All Mongolian government sites auto-safe (*.gov.mn etc.)
 
-Extra: users can block a suspicious site themselves or mark one as trusted. All
-settings stay on your device only.
+Extra: users can block a suspicious site themselves or mark one as trusted.
+All settings stay on your device only.
 
 Privacy: collects no data, sends nothing to any server, no telemetry.
+Uses only `storage` and `activeTab` permissions.
 
 ## Category
 Productivity / Security
 
 ## Keywords
-phishing, bank, security, Mongolia, protection, homograph, safe browsing
+phishing, bank, security, Mongolia, protection, homograph, safe browsing, IDN
