@@ -1,4 +1,4 @@
-/* Tatar Shield — content script: block page (улаан), banner (шар) + хэрэглэгчийн жагсаалт. */
+﻿/* Tatar Shield — content script: block page (улаан), banner (шар) + хэрэглэгчийн жагсаалт. */
 (function () {
   function norm(h) { return (h || "").replace(/^www\./, "").toLowerCase(); }
   function inList(list, host) {
@@ -145,3 +145,4 @@
     else document.addEventListener("DOMContentLoaded", build);
   }
 })();
+

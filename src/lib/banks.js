@@ -5,6 +5,10 @@
  * protect: true  (анхдагч) — брэнд нэрийг нь дуураймал/homograph илрүүлэлтэд ашиглана.
  * protect: false — зөвхөн ногоон баталгаа (allowlist), look-alike илрүүлэлтэд ОРОХГҮЙ.
  *   (Түгээмэл үгтэй нэрсийг false болгосон — дэлхийн жинхэнэ сайтуудыг андуурахаас сэргийлнэ.)
+ *
+ * Subdomain бодлого: OFFICIAL/PROTECT-д бүртгэгдсэн домайны subdomain-ууд
+ * автоматаар allowlist-д ордог (жишээ: *.gov.mn, *.khanbank.mn гэх мэт).
+ * isOfficialSubdomain() функцийг ашиглана.
  */
 (function () {
   var BANKS = [
@@ -23,9 +27,12 @@
     { name: "М Банк (M Bank)", domains: ["mbank.mn"] },
 
     // ---- Гол төрийн үйлчилгээ ----
+    // Тэмдэглэл: gov.mn-г нэмснээр *.gov.mn (mta.gov.mn, ndaatgal.gov.mn гэх мэт)
+    // бүгд автоматаар allowlist-д ордог.
     { name: "E-Mongolia", domains: ["e-mongolia.mn"] },
     { name: "Монгол Улсын Засгийн газар", domains: ["gov.mn"] },
     { name: "Татварын ерөнхий газар", domains: ["mta.mn"] },
+    { name: "Нийгмийн даатгал", domains: ["ndaatgal.mn"] },
 
     // ---- Крипто/дижитал хөрөнгийн бирж (allowlist only) ----
     { name: "CoinHub", domains: ["coinhub.mn"], protect: false },
@@ -73,7 +80,29 @@
     });
   });
 
-  var api = { BANKS: BANKS, OFFICIAL: OFFICIAL, PROTECT: PROTECT, CYRILLIC: CYRILLIC };
+  /**
+   * Subdomain wildcard шалгалт.
+   * host нь OFFICIAL-д бүртгэгдсэн домайны subdomain мөн эсэхийг шалгана.
+   * Жишээ: isOfficialSubdomain("mta.gov.mn") → true (gov.mn OFFICIAL-д байгаа)
+   *         isOfficialSubdomain("internet.khanbank.mn") → true
+   */
+  function isOfficialSubdomain(host) {
+    host = host.toLowerCase().replace(/^www\./, "");
+    var parts = host.split(".");
+    for (var i = 1; i < parts.length; i++) {
+      var parent = parts.slice(i).join(".");
+      if (OFFICIAL.has(parent)) return true;
+    }
+    return false;
+  }
+
+  var api = {
+    BANKS: BANKS,
+    OFFICIAL: OFFICIAL,
+    PROTECT: PROTECT,
+    CYRILLIC: CYRILLIC,
+    isOfficialSubdomain: isOfficialSubdomain
+  };
   if (typeof globalThis !== "undefined") globalThis.TATAR_BANKS = api;
   else if (typeof self !== "undefined") self.TATAR_BANKS = api;
   else if (typeof window !== "undefined") window.TATAR_BANKS = api;
