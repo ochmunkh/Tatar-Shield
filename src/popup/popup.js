@@ -4,13 +4,16 @@
   var REASONS = {
     mixed_script: "Хаягт кирилл, латин үсэг холилдсон",
     punycode: "Хаягт нуугдмал үсэг (punycode) оржээ",
-    non_ascii: "Хаягт латин бус үсэг оржээ",
     skeleton_match: "Албан ёсны нэрийг яг хуулбарласан",
     lookalike: "Албан ёсны нэртэй ижил харагдана",
     typosquat: "Үсэг сольсон хуурамч хаяг",
     combosquat: "Банкны нэрийг агуулсан хуурамч хаяг",
     brand_in_subdomain: "Банкны нэрийг хаягийн дунд нуусан",
     brand_diff_domain: "Албан ёсны нэртэй ижил боловч өөр хаяг",
+    brand_alias: "Албан ёсны нэрийн дуураймал хувилбар",
+    official_domain_in_subdomain: "Албан ёсны бүтэн хаягийг өөр домэйны дор нуусан",
+    latin_disguise: "Латин үсэг мэт харагдуулсан нуугдмал үсэг",
+    userinfo_spoof: "«@» тэмдгийн ард жинхэнэ хаягийг нуусан",
     cyrillic_brand: "Кирилл үсгээр банкны нэрийг бичсэн хуурамч хаяг",
     user_blacklist: "Та энэ хаягийг блоклосон",
     user_whitelist: "Та энэ хаягийг найдвартай гэж тэмдэглэсэн"
@@ -50,7 +53,7 @@
       CUR = host;
       getLists().then(function (L) {
         askStored(function (stored) {
-          var res = decide(host, L.bl, L.wl, stored);
+          var res = decide(url, host, L.bl, L.wl, stored);
           render(res);
           renderActions(host, res, L.bl, L.wl);
         });
@@ -65,12 +68,12 @@
     setTimeout(function () { if (!done) cb(null); }, 300);
   }
 
-  function decide(host, bl, wl, stored) {
+  function decide(url, host, bl, wl, stored) {
     if (!host) return null;
     if (inList(wl, host)) return { level: "safe", official: true, userWhitelisted: true, host: norm(host), unicode: norm(host), reasons: ["user_whitelist"] };
     if (inList(bl, host)) return { level: "high", score: 100, userBlacklisted: true, host: norm(host), unicode: norm(host), reasons: ["user_blacklist"] };
     if (stored && norm(stored.host) === norm(host)) return stored;
-    try { return TATAR_IDN.analyzeHost(host); } catch (e) { return null; }
+    try { return TATAR_IDN.analyzeUrl(url, host); } catch (e) { return null; }
   }
 
   function render(res) {

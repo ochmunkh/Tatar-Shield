@@ -1,25 +1,33 @@
-<!-- Thanks for contributing to Tatar-Shield! -->
+<!--
+  Tatar-Shield-д хувь нэмэр оруулсанд баярлалаа!
+  Монголоор эсвэл англиар бөглөж болно — аль нэг нь хангалттай.
+  Thanks for contributing! Either language is fine.
+-->
 
-## What & why
+## Юу, яагаад / What & why
 
-Describe the change and motivation. Link related issues (e.g. `Closes #12`).
+Өөрчлөлт ба шалтгааныг тайлбарлана уу. Холбогдох issue-г холбоно
+(ж: `Closes #12`).
 
-## Type
+*Describe the change and motivation. Link related issues.*
 
-- [ ] Allow/deny list update (domains)
-- [ ] Detection / matching logic
+## Төрөл / Type
+
+- [ ] Жагсаалтын шинэчлэл (домэйн) — allow/deny list update
+- [ ] Илрүүлэлтийн логик — detection / matching logic
 - [ ] UI / UX
-- [ ] Bug fix
-- [ ] Docs
+- [ ] Алдааны засвар — bug fix
+- [ ] Баримт — docs
 
-## Checklist
+## Шалгах жагсаалт / Checklist
 
-- [ ] Loads as an unpacked extension without errors
-- [ ] Works offline (no external network calls added)
-- [ ] No user data collected / sent (privacy preserved — see `PRIVACY.md`)
-- [ ] Tested on at least one Chromium browser
-- [ ] Domain changes verified (legit vs look-alike)
+- [ ] Unpacked өргөтгөл болж алдаагүй ачаалагдана — loads without errors
+- [ ] Офлайн ажиллана (шинэ гадаад дуудлага нэмээгүй) — works offline
+- [ ] Хэрэглэгчийн өгөгдөл цуглуулаагүй/илгээгээгүй (`PRIVACY.md`) — no user data
+- [ ] Дор хаяж нэг Chromium хөтөч дээр шалгасан — tested on Chromium
+- [ ] Домэйны өөрчлөлтийг шалгасан (жинхэнэ ба дуураймал) — domain changes verified
+- [ ] `node --test` ногоон — the test suite passes
 
-## Notes
+## Нэмэлт / Notes
 
-Anything reviewers should know.
+Хянагчид мэдэх ёстой зүйл. *Anything reviewers should know.*

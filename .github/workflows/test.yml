@@ -1,0 +1,39 @@
+# Илрүүлэлтийн логикийг commit/PR бүр дээр шалгана.
+# Гадны хамаарал ШААРДАХГҮЙ — node-ийн өөрийн test runner (node --test).
+name: test
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  detection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Өргөтгөл эвдэрсэн эсэхийг хамгийн хямд аргаар шалгах.
+      - name: Syntax check
+        run: |
+          for f in src/lib/*.js src/content/*.js src/popup/*.js src/background/*.js; do
+            node --check "$f"
+          done
+          # .replace() — manifest.json нь UTF-8 BOM-той (хөтөч уншиж байгаа тул
+          # хөндсөнгүй), JSON.parse нь BOM-ыг өөрөө хасдаггүй.
+          node -e "JSON.parse(require('fs').readFileSync('manifest.json','utf8').replace(/^\uFEFF/,''))"
+
+      # MUST_BE_SAFE / MUST_BE_HIGH корпус — жинхэнэ банк дээр хуурамч
+      # анхааруулга гаргах, дуураймал хаягийг өнгөрүүлэх регрессийг барина.
+      - name: Detection tests
+        run: node --test
+
+      # README-ийн хоёр хэлний хэсгийн БҮТЭЦ зөрсөн эсэх. Агуулгыг нь биш —
+      # гарчиг, хүснэгтийн мөр, кодын блокийн ТООГ харьцуулна. Нэг талыг
+      # шинэчлээд нөгөөг мартах нь энэ репозиторуудын байнгын алдаа.
+      - name: README bilingual parity
+        run: node scripts/check-readme-parity.js

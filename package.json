@@ -1,0 +1,10 @@
+{
+  "name": "tatar-shield",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Tatar Shield — Монголын банк, төрийн сайтуудын дуураймал домэйныг илрүүлэх хөтчийн өргөтгөл. Хамаарал ШААРДАХГҮЙ — зөвхөн тестийн script.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  }
+}
