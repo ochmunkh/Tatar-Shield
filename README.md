@@ -5,7 +5,7 @@
 > A lightweight, **offline** browser extension that protects Mongolian users from
 > look-alike (phishing) domains of local banks & government sites.
 
-![version](https://img.shields.io/badge/version-1.2.0-brightgreen)
+![version](https://img.shields.io/badge/version-1.3.0-brightgreen)
 ![manifest](https://img.shields.io/badge/Manifest-V3-blue)
 ![privacy](https://img.shields.io/badge/privacy-no%20data%20collected-success)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -60,11 +60,18 @@ Chrome, Edge, Firefox дээр ажиллана. Бүх шалгалт хөтө�
 | Грек / fullwidth тэмдэгт | `κhanbanκ.mn`, `ｋｈａｎｂａｎｋ.mn` | 🔴 Өндөр |
 | Яг брэнд нэр, өөр TLD | `khanbank.net` | 🔴 Өндөр |
 | Typosquat / combosquat | `golom6tbank.com`, `mbank-secure.com` | 🟡 Сэжигтэй |
+| Үнэгүй хостинг дээрх брэнд + түлхүүр үг | `khanbank-login.netlify.app`, `khanbnk.github.io` | 🔴 Өндөр |
+| Гадны IP хаяг + брэнд замд | `http://185.x.x.x/khanbank/login` | 🔴 Өндөр |
 
 > ℹ️ **Punycode нь өөрөө анхааруулга БИШ.** `xn--…` хэлбэр нь зөвхөн брэндийн
 > шинжтэй (кирилл банкны нэр, латин заль, skeleton тааралт) хамт гарвал оноо
 > болно. Тиймээс `монгол.mn`, `москва.рф`, `한국.kr`, `日本.jp` мэт дэлхийн
 > ердийн IDN сайт дээр анхааруулга ГАРАХГҮЙ.
+>
+> ℹ️ **Үнэгүй хостинг** (`netlify.app`, `github.io`, `pages.dev` г.м) дээр зөвхөн **танигдсан** платформ
+> шалгагдана. Чөлөөт домэйн (`khanbank-login.example.com`) дээр эзэмшигчийг мэдэхгүй тул хөндөхгүй; яг брэнд
+> нэр (`khanbank.netlify.app`) шар хэвээр. **IP** хаяг дээр брэнд нэр замд байхад л блоклоно — брэндгүй IP
+> хуудас болон хувийн/локал хаяг (router `192.168.x.x`, `localhost`, docker) хөндөгдөхгүй.
 
 ## 🧮 Оноололт
 `≥ 70` → 🔴 Өндөр (блок) · `35–69` → 🟡 Сэжигтэй (banner) · `< 35` → 🟢 Хэвийн
@@ -118,6 +125,12 @@ node --test
 (хуудас нь `src/lib`-ийн жинхэнэ файл болон `test/cases.js`-ийн ЯГ ижил
 кейсүүдийг ачаалдаг — хуулбар байхгүй).
 
+## 🙋 Буруу илрүүлэлт мэдээлэх
+Жинхэнэ сайтыг буруу блоклосон бол блок хуудас эсвэл popup дээрх «Messenger-ээр мэдэгдээрэй» холбоосыг дарна
+([m.me/enkhbat.o](https://m.me/enkhbat.o)). Зөвхөн **домайн нэрийг** бичнэ үү — бүтэн хаяг, нууц үг, OTP бүү илгээ.
+Техникийн хэрэглэгчид [GitHub issue](https://github.com/ochmunkh/Tatar-Shield/issues/new?template=bug_report.md) нээж болно.
+Өргөтгөл өөрөө юу ч автоматаар илгээдэггүй — холбоос зөвхөн таныг дарахад нээгдэнэ.
+
 ## 🔐 Нууцлал
 Ямар ч мэдээлэл цуглуулдаггүй. Дэлгэрэнгүй: [PRIVACY.md](PRIVACY.md).
 
@@ -147,6 +160,8 @@ sent to any server, no telemetry.
 | Greek / fullwidth confusables | `κhanbanκ.mn`, `ｋｈａｎｂａｎｋ.mn` | 🔴 High |
 | Exact brand, different TLD | `khanbank.net` | 🔴 High |
 | Typosquat / combosquat | `golom6tbank.com`, `mbank-secure.com` | 🟡 Suspicious |
+| Brand + keyword on free hosting | `khanbank-login.netlify.app`, `khanbnk.github.io` | 🔴 High |
+| Public IP host + brand in the path | `http://185.x.x.x/khanbank/login` | 🔴 High |
 
 > ℹ️ **Punycode is not a warning on its own.** An `xn--…` host only scores when
 > a brand signal comes with it (Cyrillic bank name, Latin-look-alike label,
@@ -160,6 +175,12 @@ sent to any server, no telemetry.
 > **not** cover `ckbank`, `nibank`, `e-nibank` or `etransbank` — those are the
 > exact brand cores of licensed Mongolian banks, so `ckbank.com` and
 > `nibank.com` are blocked.
+>
+> ℹ️ **Free hosting** (`netlify.app`, `github.io`, `pages.dev`, …) is checked only for **known** platforms.
+> Arbitrary domains (`khanbank-login.example.com`) are left alone because we cannot know who owns them;
+> an exact brand label (`khanbank.netlify.app`) stays yellow. A **raw IP** is blocked only when a brand name
+> is in the path — IP pages without a brand and private/local addresses (router `192.168.x.x`, `localhost`,
+> docker) are never flagged.
 
 ## Scoring
 `≥ 70` → high (block) · `35–69` → suspicious (banner) · `< 35` → safe.
@@ -185,6 +206,12 @@ banks, government sites, ordinary Mongolian Cyrillic domains (`монгол.mn`,
 in both spellings, Unicode (`аррӏе.mn`) and the punycode form a browser actually
 reports (`xn--80ak6aa92e.mn`). `test/logic-test.html` runs the very same cases in
 a browser — both loaders read `test/cases.js`, so the two lists cannot drift.
+
+## Report a false positive
+If a legitimate site is wrongly flagged, use the Messenger link on the block page or popup
+([m.me/enkhbat.o](https://m.me/enkhbat.o)). Send the **domain name only** — never a full URL, password or OTP.
+Technical users can open a [GitHub issue](https://github.com/ochmunkh/Tatar-Shield/issues/new?template=bug_report.md).
+The extension itself never sends anything automatically; the link opens only when you click it.
 
 ## Privacy
 No data collected — see [PRIVACY.md](PRIVACY.md). Store review notes: [docs/permissions.md](docs/permissions.md).

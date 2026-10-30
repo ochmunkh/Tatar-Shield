@@ -14,12 +14,16 @@
     official_domain_in_subdomain: "Албан ёсны бүтэн хаягийг өөр домэйны дор нуусан",
     latin_disguise: "Латин үсэг мэт харагдуулсан нуугдмал үсэг",
     userinfo_spoof: "«@» тэмдгийн ард жинхэнэ хаягийг нуусан",
+    brand_on_shared_hosting: "Үнэгүй хостинг дээр банкны нэрийг хуурамчаар ашигласан",
+    ip_host_brand: "Домайнгүй (IP хаягтай) хуудсан дээр банкны нэр бичигдсэн",
     cyrillic_brand: "Кирилл үсгээр банкны нэрийг бичсэн хуурамч хаяг",
     user_blacklist: "Та энэ хаягийг блоклосон",
     user_whitelist: "Та энэ хаягийг найдвартай гэж тэмдэглэсэн"
   };
 
   var CUR = null; // одоогийн host
+  // content.js дахь FEEDBACK_URL-тэй ЯГ ижил байх ёстой (test/feedback.test.js шалгана).
+  var FEEDBACK_URL = "https://m.me/enkhbat.o";
 
   function norm(h) { return (h || "").replace(/^www\./, "").toLowerCase(); }
   function inList(list, host) {
@@ -124,6 +128,9 @@
     }
     if (res.nearestName) card.appendChild(div("note", "Дуурайлгаж буй: " + res.nearestName));
     card.appendChild(div("alert", "🚫 Нэвтрэх нэр, нууц үг, OTP код, картын мэдээллээ бүү оруул!"));
+    card.appendChild(div("note", res.level === "high"
+      ? "Юу хийх вэ: энэ хуудсыг хаагаад банкныхаа албан ёсны аппаас эсвэл хаягийг өөрөө бичиж орно уу. Аль хэдийн мэдээлэл оруулсан бол банкаа яаралтай холбож, нууц үгээ солино уу."
+      : "Юу хийх вэ: хаяг албан ёсных гэдгийг сайн шалга. Эргэлзэж байвал банкныхаа албан ёсны аппаар орно уу."));
   }
 
   function renderActions(host, res, bl, wl) {
@@ -152,6 +159,9 @@
     var cnt = small("Миний жагсаалт: блок " + (bl || []).length + " · найдвартай " + (wl || []).length);
     cnt.style.marginTop = "8px";
     wrap.appendChild(cnt);
+    if ((res.level === "high" || res.level === "suspicious") && !res.official && !res.userBlacklisted && !res.userWhitelisted) {
+      wrap.appendChild(feedbackNote(host));
+    }
   }
 
   function reloadTabAndPopup() {
@@ -161,6 +171,20 @@
       });
     } catch (e) {}
     load();
+  }
+
+  // Буруу илрүүлсэн гэж үзвэл хэрэглэгч өөрөө Messenger нээж мэдэгдэнэ (автоматаар юу ч илгээхгүй).
+  function feedbackNote(host) {
+    var d = document.createElement("div"); d.className = "note";
+    d.style.fontSize = "11px"; d.style.marginTop = "10px";
+    d.appendChild(document.createTextNode("Буруу илрүүлсэн үү? "));
+    var a = document.createElement("a");
+    a.href = FEEDBACK_URL; a.target = "_blank"; a.rel = "noopener noreferrer";
+    a.textContent = "Messenger-ээр мэдэгдээрэй"; a.style.color = "#60a5fa";
+    d.appendChild(a);
+    d.appendChild(document.createElement("br"));
+    d.appendChild(document.createTextNode("Зөвхөн домайн нэрийг (" + norm(host) + ") бичнэ үү. Бүтэн хаяг, нууц үг бүү илгээ."));
+    return d;
   }
 
   function big(emoji, color, headline) {

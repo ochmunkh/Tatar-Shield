@@ -58,6 +58,11 @@
     return e;
   }
 
+  // Буруу блоклосон гэж үзвэл хэрэглэгч өөрөө Messenger нээж мэдэгдэнэ.
+  // Өргөтгөл юу ч автоматаар илгээхгүй — холбоос зөвхөн хэрэглэгч дархад нээгдэнэ.
+  // popup.js дахь FEEDBACK_URL-тэй ЯГ ижил байх ёстой (test/feedback.test.js шалгана).
+  var FEEDBACK_URL = "https://m.me/enkhbat.o";
+
   function blockPage(res) {
     function build() {
       // Хуудас өөрөө ижил id-тай div тавиад анхааруулгыг дарж болохгүй —
@@ -120,6 +125,10 @@
 
       card.appendChild(el("div", "font-size:16px; font-weight:700; margin:14px 0 18px;",
         "🚫 Нэвтрэх нэр, нууц үг, OTP код, картын мэдээллээ бүү оруул!"));
+      if (!res.userBlacklisted) {
+        card.appendChild(el("div", "font-size:13px; line-height:1.5; opacity:.9; margin:-6px 0 16px;",
+          "Аль хэдийн мэдээлэл оруулсан бол банкаа яаралтай холбож, нууц үгээ солино уу."));
+      }
 
       var back = el("button", "all:initial; cursor:pointer; display:inline-block;" +
         "background:#16a34a; color:#fff; font-weight:700; font-size:16px;" +
@@ -143,6 +152,19 @@
       });
       proceedDiv.appendChild(go);
       card.appendChild(proceedDiv);
+
+      var fbLink = null;
+      if (!res.userBlacklisted) {
+        var fb = el("div", "margin-top:18px; font-size:13px; line-height:1.6; opacity:.9;");
+        fb.appendChild(document.createTextNode("Буруу блоклосон гэж бодож байна уу? "));
+        fbLink = el("a", "all:initial; cursor:pointer; color:#fff; font-size:13px;" +
+          "text-decoration:underline; font-family:inherit;", "Messenger-ээр мэдэгдээрэй");
+        fbLink.href = FEEDBACK_URL; fbLink.target = "_blank"; fbLink.rel = "noopener noreferrer";
+        fb.appendChild(fbLink);
+        fb.appendChild(el("div", "font-size:12px; opacity:.75; margin-top:2px;",
+          "Зөвхөн домайн нэрийг (" + res.host + ") бичнэ үү. Бүтэн хаяг, нууц үг бүү илгээ."));
+        card.appendChild(fb);
+      }
       card.appendChild(el("div", "margin-top:22px; font-size:12px; opacity:.7;", "Tatar Shield · Enkhbat.O — Security Analyst"));
 
       // Focus-ыг хоёр товчны дунд эргэлдүүлж, доорх фишинг хуудас руу
@@ -150,7 +172,7 @@
       ov.addEventListener("keydown", function (ev) {
         if (ev.key !== "Tab") return;
         ev.preventDefault();
-        var order = [back, go], i = order.indexOf(document.activeElement);
+        var order = fbLink ? [back, go, fbLink] : [back, go], i = order.indexOf(document.activeElement);
         var n = ev.shiftKey ? (i <= 0 ? order.length - 1 : i - 1) : (i + 1) % order.length;
         try { order[n].focus(); } catch (e) {}
       });

@@ -389,3 +389,127 @@ test("skeleton — Монгол нэрийг латин гэж андуурах�
   assert.ok(/[^\x00-\x7F]/.test(IDN.toSkeleton("мэдээ")), "мэдээ латин болох ёсгүй");
   assert.ok(/[^\x00-\x7F]/.test(IDN.toSkeleton("монгол")), "монгол латин болох ёсгүй");
 });
+
+// ---------------------------------------------------------------------------
+// Хуваалцсан хостинг дээрх брэнд — brand_on_shared_hosting (idn.js, banks.js SHARED_HOSTING).
+//
+//    Хэн ч ҮНЭГҮЙ дэд домэйн авдаг (netlify.app, github.io ...) тул "брэнд + түлхүүр үг"
+//    (khanbank-login.netlify.app) эсвэл үсэг алдсан (khanbnk.netlify.app) нь бараг үргэлж
+//    фишинг. Өмнө нь typo/combo шалгалт зөвхөн үндсэн домэйн (netlify) дээр ажилладаг,
+//    дэд домэйн дээр зөвхөн ЯГ брэнд нэрийг шалгадаг байсан тул эдгээр бүгд "safe" гардаг байв.
+//
+//    ЗӨВХӨН SHARED_HOSTING дээр: чөлөөт домэйн (khanbank-login.example.com) дээр эзэмшигчийг
+//    мэдэхгүй тул одоогийн (аюулгүй) үр дүн хэвээр.
+// ---------------------------------------------------------------------------
+var HOSTED_HIGH = [
+  "khanbank-login.netlify.app", "secure-khanbank.pages.dev", "xacbank-login.github.io",
+  "golomtbank-verify.web.app", "khanbank-secure.herokuapp.com", "khanbankmn.netlify.app",
+  "khanbnk.netlify.app", "golomtbnk.vercel.app", "e-mongolia-login.netlify.app",
+  "login.khanbank-secure.netlify.app", "khanbank-login.onrender.com", "khanbank-mn.netlify.app"
+];
+test("хуваалцсан хостинг — брэнд + түлхүүр үг / үсэг алдсан хаяг блоклогдоно", function () {
+  HOSTED_HIGH.forEach(function (h) {
+    var r = IDN.analyzeHost(h);
+    assert.strictEqual(r.level, "high", fmt(h) + " — блоклогдох ёстой");
+    assert.ok(r.reasons.some(function (x) { return x.indexOf("brand_on_shared_hosting:") === 0; }), fmt(h) + " — шалтгаан дутуу");
+    assert.ok(r.nearestName, h + " — дуурайлгаж буй байгууллагын нэр алга");
+  });
+});
+
+// Эдгээр дээр анхааруулга ГАРАХ ЁСГҮЙ — жирийн хөгжүүлэгчийн сайт, ердийн үгтэй нэр.
+var HOSTED_NOT_FLAGGED = [
+  "my-blog.netlify.app", "portfolio.vercel.app", "khanbank-calculator.netlify.app",
+  "embankment-photos.netlify.app",   // "mbank" дэд мөр боловч өөр үг
+  "mystorepayment.netlify.app",      // "storepay" дэд мөр боловч өөр үг
+  "tbank.netlify.app",               // 5 тэмдэгт — typo шалгалтад орохгүй
+  "github.io", "netlify.app",        // хостинг өөрөө
+  "khanbank-login.example.com"       // чөлөөт домэйн: эзэмшигчийг мэдэхгүй тул хөндөхгүй (бодлого)
+];
+test("хуваалцсан хостинг — жирийн дэд домэйн дээр анхааруулга гарахгүй", function () {
+  HOSTED_NOT_FLAGGED.forEach(function (h) {
+    assert.strictEqual(IDN.analyzeHost(h).level, "safe", fmt(h));
+  });
+});
+
+test("хуваалцсан хостинг — яг брэнд нэрийн бодлого (шар) өөрчлөгдөөгүй", function () {
+  // khanbank.netlify.app: платформ хаяг тул зөвхөн сэжигтэй (idn.js-ийн brand_in_subdomain тайлбар).
+  var r = IDN.analyzeHost("khanbank.netlify.app");
+  assert.strictEqual(r.level, "suspicious", fmt("khanbank.netlify.app"));
+  assert.ok(r.reasons.indexOf("brand_on_shared_hosting:khanbank") < 0, "яг брэнд нэр дээр шинэ дүрэм ажиллах ёсгүй");
+  // Албан ёсны БҮТЭН домэйныг хостингийн дэд домэйнд нуувал өмнөх шигээ блок.
+  assert.strictEqual(IDN.analyzeHost("khanbank.mn.netlify.app").level, "high");
+  // Албан ёсны subdomain нь ногоон хэвээр.
+  assert.strictEqual(IDN.analyzeHost("internet.khanbank.mn").official, true);
+});
+
+test("SHARED_HOSTING жагсаалтын бүрэн бүтэн байдал", function () {
+  var list = BANKS.SHARED_HOSTING;
+  assert.ok(Array.isArray(list) && list.length >= 20, "SHARED_HOSTING жагсаалт хоосон/хэт бага");
+  var seen = {};
+  list.forEach(function (s) {
+    assert.strictEqual(s, s.toLowerCase(), s + " — жижиг үсгээр байх ёстой");
+    assert.ok(s.indexOf(".") > 0 && s[0] !== ".", s + " — «a.b» хэлбэртэй суффикс байх ёстой");
+    assert.ok(!seen[s], s + " — давхардсан");
+    seen[s] = 1;
+    BANKS.OFFICIAL.forEach(function (d) {
+      assert.ok(d !== s && !d.endsWith("." + s), s + " — албан ёсны домэйн " + d + " хуваалцсан хостинг дээр байж болохгүй");
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Домайнгүй (IP) хост + брэнд замд — ip_host_brand (idn.js analyzeUrl).
+//    Банк, төр домайн ашигладаг. ГАДНЫ IP дээр банкны нэр замд байвал фишинг.
+//    Харин брэндгүй IP хуудас, хувийн/локал хаяг (router, dev сервер) ХӨНДӨГДӨХГҮЙ.
+// ---------------------------------------------------------------------------
+var IP_HIGH = [
+  ["http://185.12.3.4/khanbank/login", "185.12.3.4"],
+  ["http://8.8.8.8/e-mongolia/?next=1", "8.8.8.8"],
+  ["http://45.9.148.10/xacbank-login/index.php", "45.9.148.10"],
+  ["http://185.12.3.4:8080/?u=khanbank", "185.12.3.4"],
+  ["http://[2a00:1450:4001::1]/golomtbank/", "[2a00:1450:4001::1]"]
+];
+test("IP хост + брэнд замд — блоклогдоно", function () {
+  IP_HIGH.forEach(function (c) {
+    var r = IDN.analyzeUrl(c[0], c[1]);
+    assert.strictEqual(r.level, "high", c[0] + " -> " + r.level);
+    assert.ok(r.reasons[0].indexOf("ip_host_brand:") === 0, c[0] + " — шалтгаан: " + r.reasons.join(","));
+    assert.ok(r.nearestName, c[0] + " — дуурайлгаж буй байгууллага алга");
+  });
+});
+
+var IP_NOT_HIGH = [
+  ["http://185.12.3.4/", "185.12.3.4"],                    // брэндгүй IP
+  ["http://185.12.3.4/shop/products", "185.12.3.4"],
+  ["http://185.12.3.4/embankment/", "185.12.3.4"],         // "mbank" дэд мөр боловч өөр үг
+  ["http://192.168.1.1/khanbank/", "192.168.1.1"],         // router / LAN
+  ["http://10.0.0.5/xacbank/login", "10.0.0.5"],
+  ["http://127.0.0.1:8080/khanbank/", "127.0.0.1"],        // локал туршилт (hosts + demo сервер)
+  ["http://169.254.169.254/khanbank", "169.254.169.254"],
+  ["http://172.20.0.2/khanbank", "172.20.0.2"],            // docker
+  ["http://100.64.0.1/khanbank", "100.64.0.1"],            // CGNAT
+  ["http://[::1]/khanbank/", "[::1]"],
+  ["http://[fd00::1]/khanbank/", "[fd00::1]"],
+  // Бодлого: хост нь IP БИШ бол замд брэнд байхыг блоклохгүй — мэдээ, форум дээр буруу
+  // анхааруулга гарахаас сэргийлнэ.
+  ["https://evil.example/khanbank/login", "evil.example"]
+];
+test("IP хост + брэнд замд — хувийн/брэндгүй/IP бус хаяг хөндөгдөхгүй", function () {
+  IP_NOT_HIGH.forEach(function (c) {
+    var r = IDN.analyzeUrl(c[0], c[1]);
+    assert.notStrictEqual(r.level, "high", c[0] + " -> " + r.level + " [" + (r.reasons || []).join(",") + "]");
+  });
+  assert.strictEqual(IDN.analyzeUrl("https://khanbank.mn/khanbank/login", "khanbank.mn").official, true);
+});
+
+test("isPublicIp — хувийн, локал, нөөцлөгдсөн хаяг public биш", function () {
+  ["8.8.8.8", "185.12.3.4", "1.1.1.1", "172.15.0.1", "172.32.0.1", "100.63.0.1", "100.128.0.1",
+   "2a00:1450:4001::1", "[2606:4700::1111]"].forEach(function (h) {
+    assert.strictEqual(IDN.isPublicIp(h), true, h + " — public байх ёстой");
+  });
+  ["10.1.2.3", "127.0.0.1", "192.168.0.1", "172.16.0.1", "172.31.255.255", "169.254.1.1", "100.64.0.1",
+   "100.127.0.1", "0.0.0.0", "224.0.0.1", "255.255.255.255", "::1", "[::1]", "fd12::1", "fe80::1",
+   "::ffff:1.2.3.4", "999.1.1.1", "example.com", "khanbank.mn", ""].forEach(function (h) {
+    assert.strictEqual(IDN.isPublicIp(h), false, h + " — public БАЙХ ЁСГҮЙ");
+  });
+});
