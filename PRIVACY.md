@@ -1,6 +1,6 @@
 # Нууцлалын бодлого / Privacy Policy — Tatar Shield
 
-**Сүүлд шинэчилсэн: 2026-07**
+**Сүүлд шинэчилсэн: 2026-10**
 
 ## Монголоор
 
@@ -11,6 +11,9 @@ Tatar Shield нь **ямар ч хувийн мэдээлэл цуглуулда
 - Таны үзсэн вэб хуудас, хайлт, түүх, нэвтрэх мэдээллийг **цуглуулахгүй, харахгүй**.
 - Хэрэглэгчийн "блок"/"найдвартай" жагсаалт зөвхөн таны төхөөрөмж дээр
   (`chrome.storage.local`) хадгалагдана, хаана ч илгээгдэхгүй.
+- «Буруу илрүүлэлт мэдээлэх» холбоос (блок хуудас, popup) нь зөвхөн таныг **дарахад** Facebook Messenger-ийг
+  шинэ табд нээнэ. Өргөтгөл өөрөө юу ч илгээдэггүй; Messenger-т бичсэн зүйлд Facebook-ийн нууцлалын бодлого
+  үйлчилнэ. Зөвхөн домайн нэрийг бичнэ үү — бүтэн хаяг, нууц үг бүү илгээ.
 
 **Ашигладаг зөвшөөрөл:**
 - `storage` — таны жагсаалт болон таб бүрийн үр дүнг локал хадгалах.
@@ -26,6 +29,9 @@ Tatar Shield **does not collect, store, or transmit any personal data.**
 - **No data** is sent to third parties or our servers (no telemetry).
 - We do **not** collect or view your browsing history, searches, or credentials.
 - The user block/allow list is stored only on your device (`chrome.storage.local`).
+- The "report a false positive" link (block page, popup) opens Facebook Messenger in a new tab only when **you click
+  it**. The extension itself sends nothing; what you write in Messenger is governed by Facebook's privacy policy.
+  Send the domain name only — never a full URL or a password.
 
 **Permissions used:** `storage` (local list & per-tab result), `activeTab` (read
 active tab address), `<all_urls>` content script (check each site's domain for
