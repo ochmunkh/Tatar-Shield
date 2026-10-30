@@ -48,6 +48,11 @@ Tatar Shield нь дараах **L1 офлайн** шалгалтуудыг хэ
 | 7 | Кирилл банкны нэр | `banks.js` | `ханбанк.мн` |
 | 8 | Wildcard subdomain | `banks.js` | `*.gov.mn`, `*.khanbank.mn` |
 | 9 | @ userinfo заль | `idn.js` + `content.js` | `khanbank.mn@evil.com` |
+| 10 | Үнэгүй хостинг дээрх брэнд | `idn.js` + `banks.js` (`SHARED_HOSTING`) | `khanbank-login.netlify.app` |
+| 11 | Гадны IP хост + брэнд замд | `idn.js` | `http://185.12.3.4/khanbank/login` |
+
+`SHARED_HOSTING` (`banks.js`)-д зөвхөн дэд домэйныг ХЭН Ч үнэгүй авдаг платформ нэмнэ. Өөрийн эзэмшлийн, нэг
+эзэнтэй домэйн (`google.com`, `openai.com`) болон албан ёсны домэйныг нэмж БОЛОХГҮЙ — `test/run.js` шалгана.
 
 ---
 
@@ -102,6 +107,12 @@ node -e "
 тавьж болохгүй, хуулбар нь src/-ээс зөрдөг).
 
 ---
+
+## Буруу илрүүлэлт (false positive) мэдээлэх
+
+Жинхэнэ сайтыг буруу блоклосон бол Facebook Messenger ([m.me/enkhbat.o](https://m.me/enkhbat.o)) эсвэл
+GitHub issue ("Алдаа мэдээлэх / Bug report" template)-ээр мэдэгдэнэ үү. Зөвхөн домайн нэрийг бичнэ —
+бүтэн хаяг, нууц үг, OTP бүү илгээ.
 
 ## Дүрэм
 
