@@ -5,7 +5,7 @@
 > A lightweight, **offline** browser extension that protects Mongolian users from
 > look-alike (phishing) domains of local banks & government sites.
 
-![version](https://img.shields.io/badge/version-1.2.0-brightgreen)
+![version](https://img.shields.io/badge/version-1.3.0-brightgreen)
 ![manifest](https://img.shields.io/badge/Manifest-V3-blue)
 ![privacy](https://img.shields.io/badge/privacy-no%20data%20collected-success)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
