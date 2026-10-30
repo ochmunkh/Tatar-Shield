@@ -284,6 +284,101 @@
     return map;
   }
 
+  // ── Хуваалцсан хостинг дээрх брэнд ─────────────────────────────────────────
+  // Хэн ч ҮНЭГҮЙ дэд домэйн авдаг (netlify.app, github.io ...) тул БРЭНД + түлхүүр үг
+  // (khanbank-login.netlify.app) эсвэл үсэг алдсан (khanbnk.netlify.app) нь бараг үргэлж
+  // фишинг. ЗӨВХӨН banks.js-ийн SHARED_HOSTING дээр ажиллана — чөлөөт домэйн
+  // (khanbank-login.example.com) дээр эзэмшигчийг мэдэхгүй тул хөндөхгүй.
+  // Яг брэнд нэр (khanbank.netlify.app) нь brand_in_subdomain-аар (шар) аль хэдийн баригддаг.
+  var PHISH_KW = {};
+  ("login signin secure security verify verification auth account online internet ebank ibank " +
+   "update support otp wallet portal cabinet confirm unlock reset password mn mongolia official app mobile bank")
+    .split(" ").forEach(function (w) { PHISH_KW[w] = 1; });
+
+  function sharedHostingSuffix(labels) {
+    var list = (globalThis.TATAR_BANKS && globalThis.TATAR_BANKS.SHARED_HOSTING) || [];
+    var host = labels.join("."), best = null;
+    for (var i = 0; i < list.length; i++) {
+      if (host.length > list[i].length && host.endsWith("." + list[i]) && (!best || list[i].length > best.length)) best = list[i];
+    }
+    return best;
+  }
+
+  function brandOnSharedHosting(labels, map) {
+    var suffix = sharedHostingSuffix(labels);
+    if (!suffix) return null;
+    var subs = labels.slice(0, labels.length - suffix.split(".").length);
+    var ocs = Object.keys(map);
+    for (var i = 0; i < subs.length; i++) {
+      var sk = toSkeleton(subs[i]);
+      for (var k = 0; k < ocs.length; k++) {
+        var oc = ocs[k];
+        if (oc.length < 5 || sk === oc) continue;
+        // брэнд + түлхүүр үг: khanbank-login, secure-khanbank, khanbankmn
+        if (sk.indexOf(oc) > -1) {
+          var rest = sk.replace(oc, "-").split(/[-_]+/).filter(Boolean);
+          if (rest.some(function (t) { return PHISH_KW[t]; })) return { core: oc, kind: "keyword" };
+        }
+        // үсэг алдсан: khanbnk, golomtbnk (урт брэндэд л, 1-2 үсгийн зөрүү)
+        if (oc.length >= 7) {
+          var toks = sk.split(/[-_]+/);
+          for (var t = 0; t < toks.length; t++) {
+            if (toks[t].length < 6) continue;
+            var d = levenshtein(toks[t], oc);
+            if (d >= 1 && d <= 2 && 1 - d / Math.max(oc.length, toks[t].length) >= 0.8) return { core: oc, kind: "typo" };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // ── Домайнгүй (IP) хост + брэнд замд ────────────────────────────────────────
+  // Банк, төр домайн ашигладаг, IP биш. ГАДНЫ (public) IP дээр банкны нэр замд байвал
+  // (http://185.x.x.x/khanbank/login) фишинг. Хувийн/локал хаяг (router, dev сервер)
+  // болон брэндгүй IP хуудсыг хөндөхгүй.
+  function isPublicIp(host) {
+    var h = String(host || "").replace(/^\[|\]$/g, "").toLowerCase();
+    var m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (m) {
+      var a = +m[1], b = +m[2];
+      if (a > 255 || b > 255 || +m[3] > 255 || +m[4] > 255) return false;
+      if (a === 0 || a === 10 || a === 127 || a >= 224) return false;
+      if (a === 169 && b === 254) return false;
+      if (a === 172 && b >= 16 && b <= 31) return false;
+      if (a === 192 && b === 168) return false;
+      if (a === 100 && b >= 64 && b <= 127) return false;
+      if (a === 198 && (b === 18 || b === 19)) return false;
+      return true;
+    }
+    if (h.indexOf(":") > -1 && /^[0-9a-f:.]+$/.test(h)) {
+      if (h === "::" || h === "::1" || /^f[cd]/.test(h) || /^fe[89ab]/.test(h) || h.indexOf("::ffff:") === 0) return false;
+      return true;
+    }
+    return false;
+  }
+
+  function urlPathText(url) {
+    var s = String(url || "").replace(/^[a-z][a-z0-9+.-]*:\/\//i, "");
+    var i = s.search(/[\/?#]/);
+    var rest = i < 0 ? "" : s.slice(i).split("#")[0];
+    try { rest = decodeURIComponent(rest); } catch (e) {}
+    return rest.toLowerCase();
+  }
+
+  function ipHostBrand(url, host) {
+    if (!isPublicIp(host)) return null;
+    var path = urlPathText(url);
+    if (!path) return null;
+    var map = officialCores(), ocs = Object.keys(map);
+    for (var i = 0; i < ocs.length; i++) {
+      if (ocs[i].length < 5) continue;
+      var re = new RegExp("(^|[^a-z0-9])" + ocs[i].replace(/[^a-z0-9]/g, "\\$&") + "([^a-z0-9]|$)");
+      if (re.test(path)) return { core: ocs[i], domain: map[ocs[i]][0] };
+    }
+    return null;
+  }
+
   function analyzeHost(host) {
     var reasons = [], score = 0, nearest = null, nearestNameOverride = null;
     if (!host) return { score: 0, level: "safe", reasons: [], nearest: null, host: host };
@@ -382,6 +477,13 @@
       }
     });
 
+    // Хуваалцсан хостинг дээрх брэнд + түлхүүр үг / үсэг алдсан (khanbank-login.netlify.app)
+    var hosted = brandOnSharedHosting(labels, map);
+    if (hosted) {
+      score += 70; reasons.push("brand_on_shared_hosting:" + hosted.core);
+      if (!nearest) nearest = map[hosted.core][0];
+    }
+
     // Кирилл үсгээр бичсэн банкны нэр (ханбанк.мн мэт) — уншаад хууртах эрсдэл өндөр
     var CYR = (globalThis.TATAR_BANKS && globalThis.TATAR_BANKS.CYRILLIC) || {};
     var coreLc = core.toLowerCase();
@@ -448,12 +550,20 @@
                  punycode: !!res.punycode, mixed: !!res.mixed };
       }
     }
+    var ipb = ipHostBrand(url, host);
+    if (ipb) {
+      return { score: 70, level: "high", reasons: ["ip_host_brand:" + ipb.core],
+               nearest: ipb.domain, nearestName: nameOfDomain(ipb.domain),
+               host: res.host, unicode: res.unicode, skeleton: res.skeleton,
+               punycode: false, mixed: false };
+    }
     return res;
   }
 
   var api = { analyzeHost: analyzeHost, analyzeUrl: analyzeUrl, userinfoDecoys: userinfoDecoys,
               toSkeleton: toSkeleton, levenshtein: levenshtein,
-              coreLabel: coreLabel, isOfficial: isOfficial, officialInfo: officialInfo, decodeHost: decodeHost };
+              coreLabel: coreLabel, isOfficial: isOfficial, officialInfo: officialInfo, decodeHost: decodeHost,
+              isPublicIp: isPublicIp };
   if (typeof globalThis !== "undefined") globalThis.TATAR_IDN = api;
   else if (typeof self !== "undefined") self.TATAR_IDN = api;
   else if (typeof window !== "undefined") window.TATAR_IDN = api;

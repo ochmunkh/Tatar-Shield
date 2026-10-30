@@ -110,6 +110,20 @@
     "эрүүлмэндийндаатгал": "Эрүүл мэндийн даатгал"
   };
 
+  // Хуваалцсан (хэн ч ҮНЭГҮЙ дэд домэйн авдаг) хостингийн суффикс. Эдгээр дээр
+  // «брэнд + түлхүүр үг» (khanbank-login.netlify.app) бараг үргэлж фишинг тул idn.js
+  // тусгайлан шалгана. Жагсаалтад ЗӨВХӨН дэд домэйныг нээлттэй олгодог платформ орно;
+  // өөрийн эзэмшлийн, нэг эзэнтэй домэйн (google.com, openai.com) ОРОХГҮЙ.
+  // Албан ёсны (OFFICIAL) домэйн энд байж БОЛОХГҮЙ — test/run.js шалгана.
+  var SHARED_HOSTING = [
+    "netlify.app", "vercel.app", "github.io", "gitlab.io", "pages.dev", "workers.dev",
+    "web.app", "firebaseapp.com", "herokuapp.com", "onrender.com", "glitch.me", "repl.co",
+    "fly.dev", "railway.app", "surge.sh", "blogspot.com", "wordpress.com", "wixsite.com",
+    "weebly.com", "webflow.io", "carrd.co", "myshopify.com", "000webhostapp.com",
+    "infinityfreeapp.com", "azurewebsites.net", "appspot.com", "ngrok.io", "ngrok-free.app",
+    "trycloudflare.com", "duckdns.org"
+  ];
+
   var OFFICIAL = new Set();   // бүх домэйн — ногоон баталгаа
   var PROTECT = new Set();    // зөвхөн protect!==false — look-alike илрүүлэлт
   BANKS.forEach(function (b) {
@@ -124,7 +138,8 @@
     BANKS: BANKS,
     OFFICIAL: OFFICIAL,
     PROTECT: PROTECT,
-    CYRILLIC: CYRILLIC
+    CYRILLIC: CYRILLIC,
+    SHARED_HOSTING: SHARED_HOSTING
   };
   if (typeof globalThis !== "undefined") globalThis.TATAR_BANKS = api;
   else if (typeof self !== "undefined") self.TATAR_BANKS = api;
